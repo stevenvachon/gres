@@ -9,9 +9,8 @@
     "babel-core": "^6.25.0",
     "babel-polyfill": "^6.23.0",
     "dotenv": "^4.0.0",
-    "edit-dotenv": "^1.0.4",
-    "enquirer": "^1.0.2",
-    "fs-extra": "^3.0.1",
+    "dotenv-prompt": "stevenvachon/dotenv-prompt",
+    "fs-extra": "^4.0.0",
     "isset": "^1.0.3",
     "knex": "~0.13.0",
     "pg": "^6.4.0",
@@ -24,6 +23,7 @@
     "chai": "^4.1.0",
     "coveralls": "^2.13.1",
     "escape-string-regexp": "^1.0.5",
+    "js-stringify": "^1.0.2",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
     "suppose": "~0.6.2"
@@ -40,17 +40,21 @@
   "files": [
     "createdb.js",
     "dropdb.js",
-    "es2017",
-    "es2015/createdb.js",
-    "es2015/dropdb.js"
+    "es2015",
+    "es2017"
   ],
   "keywords": [
     "boilerplate",
     "bootstrapper",
     "createdb",
+    "dotenv",
     "dropdb",
+    "env",
+    ".env",
+    "init",
     "knex",
     "postgres",
-    "postgresql"
+    "postgresql",
+    "prompt"
   ]
 }

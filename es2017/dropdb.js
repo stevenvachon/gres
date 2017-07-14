@@ -41,7 +41,7 @@ const dropdb = async (envPath=".env") =>
 
 	if (confirmed)
 	{
-		// TODO :: prompt for SUPERUSER_NAME and SUPERUSER_PASSWORD (https://github.com/brianc/node-postgres/wiki/Client#new-clientobject-config--client)
+		// TODO :: prompt for superuser name/password (https://github.com/brianc/node-postgres/wiki/Client#new-clientobject-config--client)
 
 		const psql = knex({ client:"pg", connection:{ host } });
 

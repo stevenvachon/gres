@@ -6,12 +6,14 @@ const {outputFile, readFile, remove} = require("fs-extra");
 const {PassThrough} = require("stream");
 const suppose = require("suppose");
 
+const envVarsError = /^Error: Environmental variable\(s\) not set/;
+
 
 
 // TODO :: https://github.com/jprichardson/node-suppose/pull/31
 const clean = str =>
 {
-	return new RegExp(`^\s*${escapeStringRegexp(str)}\s*`, "m");
+	return new RegExp(`${escapeStringRegexp(str)}[^\\S\\r\\n]*`);
 };
 
 
@@ -21,7 +23,7 @@ const createdb = expects =>
 	return new Promise((resolve, reject) =>
 	{
 		const stream = new PassThrough()
-		//.on("data", chunk => console.log(chunk.toString());
+		//.on("data", chunk => console.log(chunk.toString()));
 
 		const supposing = suppose("node", ["test/helpers/createdb"], { debug:stream, stripAnsi:true });
 
@@ -49,7 +51,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
@@ -65,7 +67,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
@@ -81,7 +83,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
@@ -97,7 +99,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
@@ -113,7 +115,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 };
@@ -135,7 +137,7 @@ const promptsAndWrites = () =>
 		.then(error =>
 		{
 			// Vague npmjs.com/pg error stemming from fake credentials
-			expect(error).to.be.an("error").with.property("message").that.does.not.match(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.does.not.match(envVarsError);
 
 			return readFile(".env", "utf8");
 		})
@@ -181,8 +183,6 @@ describe("createdb", function()
 
 			return outputFile(".env.sample", contents);
 		});
-
-
 
 		promptsAndWrites();
 		emptyPrompts();
