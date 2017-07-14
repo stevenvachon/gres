@@ -13,7 +13,7 @@ const envVarsError = /^Error: Environmental variable\(s\) not set/;
 // TODO :: https://github.com/jprichardson/node-suppose/pull/31
 const clean = str =>
 {
-	return new RegExp(`^\s*${escapeStringRegexp(str)}\s*`, "m");
+	return new RegExp(`${escapeStringRegexp(str)}[^\\S\\r\\n]*`);
 };
 
 
@@ -23,7 +23,7 @@ const createdb = expects =>
 	return new Promise((resolve, reject) =>
 	{
 		const stream = new PassThrough()
-		//.on("data", chunk => console.log(chunk.toString());
+		//.on("data", chunk => console.log(chunk.toString()));
 
 		const supposing = suppose("node", ["test/helpers/createdb"], { debug:stream, stripAnsi:true });
 
@@ -209,8 +209,6 @@ describe("createdb", function()
 
 			return outputFile(".env.sample", contents);
 		});
-
-
 
 		promptsAndWrites();
 		emptyPrompts();
