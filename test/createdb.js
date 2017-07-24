@@ -6,6 +6,8 @@ const {outputFile, readFile, remove} = require("fs-extra");
 const {PassThrough} = require("stream");
 const suppose = require("suppose");
 
+const envVarsError = /^Error: Environmental variable\(s\) not set/;
+
 
 
 // TODO :: https://github.com/jprichardson/node-suppose/pull/31
@@ -37,11 +39,12 @@ const createdb = expects =>
 
 const emptyPrompts = () =>
 {
-	it("throws if a prompt is left empty (#1)", function()
+	it("throws if the prompt for HOST is left empty (#1)", function()
 	{
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"fake-port\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"fake-database\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"fake-user\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"fake-password\n" }
@@ -49,15 +52,34 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
-	it("throws if a prompt is left empty (#2)", function()
+	it("does not throw if the prompt for PORT is left empty", function()
 	{
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"fake-host\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"\n" },
+			{ condition:"? Value for POSTGRES_NAME ()", response:"fake-database\n" },
+			{ condition:"? Value for POSTGRES_USER ()", response:"fake-user\n" },
+			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"fake-password\n" }
+		])
+		.catch(error => error)
+		.then(error =>
+		{
+			// Vague npmjs.com/pg error stemming from fake credentials
+			expect(error).to.be.an("error").with.property("message").that.does.not.match(envVarsError);
+		});
+	});
+
+	it("throws if the prompt for NAME is left empty", function()
+	{
+		return createdb(
+		[
+			{ condition:"? Value for POSTGRES_HOST ()", response:"fake-host\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"fake-port\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"fake-user\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"fake-password\n" }
@@ -65,15 +87,16 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
-	it("throws if a prompt is left empty (#3)", function()
+	it("throws if the prompt for USER is left empty", function()
 	{
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"fake-host\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"fake-port\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"fake-database\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"fake-password\n" }
@@ -81,15 +104,16 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
-	it("throws if a prompt is left empty (#4)", function()
+	it("throws if the prompt for PASSWORD is left empty", function()
 	{
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"fake-host\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"fake-port\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"fake-database\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"fake-user\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"\n" }
@@ -97,7 +121,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 
@@ -106,6 +130,7 @@ const emptyPrompts = () =>
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"\n" }
@@ -113,7 +138,7 @@ const emptyPrompts = () =>
 		.catch(error => error)
 		.then(error =>
 		{
-			expect(error).to.be.an("error").with.property("message").that.matches(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.matches(envVarsError);
 		});
 	});
 };
@@ -127,6 +152,7 @@ const promptsAndWrites = () =>
 		return createdb(
 		[
 			{ condition:"? Value for POSTGRES_HOST ()", response:"fake-host\n" },
+			{ condition:"? Value for POSTGRES_PORT ()", response:"fake-port\n" },
 			{ condition:"? Value for POSTGRES_NAME ()", response:"fake-database\n" },
 			{ condition:"? Value for POSTGRES_USER ()", response:"fake-user\n" },
 			{ condition:"? Value for POSTGRES_PASSWORD ()", response:"fake-password\n" }
@@ -135,7 +161,7 @@ const promptsAndWrites = () =>
 		.then(error =>
 		{
 			// Vague npmjs.com/pg error stemming from fake credentials
-			expect(error).to.be.an("error").with.property("message").that.does.not.match(/^Error: Environmental variable\(s\) not set/);
+			expect(error).to.be.an("error").with.property("message").that.does.not.match(envVarsError);
 
 			return readFile(".env", "utf8");
 		})
@@ -144,6 +170,7 @@ const promptsAndWrites = () =>
 			let expected = "";
 
 			expected += `POSTGRES_HOST=fake-host${EOL}`;
+			expected += `POSTGRES_PORT=fake-port${EOL}`;
 			expected += `POSTGRES_NAME=fake-database${EOL}`;
 			expected += `POSTGRES_USER=fake-user${EOL}`;
 			expected += `POSTGRES_PASSWORD=fake-password${EOL}`;
@@ -175,6 +202,7 @@ describe("createdb", function()
 		{
 			let contents = "";
 			contents += `POSTGRES_HOST=${EOL}`;
+			contents += `POSTGRES_PORT=${EOL}`;
 			contents += `POSTGRES_NAME=${EOL}`;
 			contents += `POSTGRES_USER=${EOL}`;
 			contents += `POSTGRES_PASSWORD=${EOL}`;
@@ -186,5 +214,15 @@ describe("createdb", function()
 
 		promptsAndWrites();
 		emptyPrompts();
+	});
+
+
+
+	describe("with non-empty .env.sample file", function()
+	{
+		it.skip("works", function()
+		{
+
+		});
 	});
 });

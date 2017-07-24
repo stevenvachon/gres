@@ -44,6 +44,7 @@ const db = async env =>
 	const host     = env.POSTGRES_HOST;
 	const name     = env.POSTGRES_NAME;
 	const password = env.POSTGRES_PASSWORD;
+	const port     = env.POSTGRES_PORT;
 	const user     = env.POSTGRES_USER;
 
 	if (!isset(host) || !isset(name) || !isset(password) || !isset(user))
@@ -51,7 +52,7 @@ const db = async env =>
 		throw new Error("Environmental variable(s) not set");
 	}
 
-	const psql = knex({ client:"pg", connection:{ host } });
+	const psql = knex({ client:"pg", connection:{ host, port } });
 
 	try
 	{
@@ -85,6 +86,7 @@ const prompts = async env =>
 	const promptVars =
 	[
 		"POSTGRES_HOST",
+		"POSTGRES_PORT",
 		"POSTGRES_NAME",
 		"POSTGRES_USER",
 		"POSTGRES_PASSWORD"

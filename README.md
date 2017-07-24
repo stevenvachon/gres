@@ -21,6 +21,7 @@ A dual file convention is used, consisting of `.env.sample` and `.env`. Both fil
 
 ```
 POSTGRES_HOST=localhost
+POSTGRES_PORT=
 POSTGRES_NAME=myapp
 POSTGRES_PASSWORD=myapp
 POSTGRES_USER=myapp

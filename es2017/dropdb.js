@@ -15,6 +15,7 @@ const dropdb = async (envPath=".env") =>
 	const host     = process.env.POSTGRES_HOST;
 	const name     = process.env.POSTGRES_NAME;
 	const password = process.env.POSTGRES_PASSWORD;
+	const port     = process.env.POSTGRES_PORT;
 	const user     = process.env.POSTGRES_USER;
 
 	if (!isset(host) || !isset(name) || !isset(password) || !isset(user))
@@ -43,7 +44,7 @@ const dropdb = async (envPath=".env") =>
 	{
 		// TODO :: prompt for SUPERUSER_NAME and SUPERUSER_PASSWORD (https://github.com/brianc/node-postgres/wiki/Client#new-clientobject-config--client)
 
-		const psql = knex({ client:"pg", connection:{ host } });
+		const psql = knex({ client:"pg", connection:{ host, port } });
 
 		try
 		{
