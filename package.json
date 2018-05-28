@@ -15,7 +15,7 @@
     "isset": "^1.0.4",
     "knex": "~0.13.0",
     "pg": "^7.0.2",
-    "prompt-confirm": "^1.2.0",
+    "prompt-confirm": "^2.0.0",
     "semver": "^5.4.1"
   },
   "devDependencies": {
