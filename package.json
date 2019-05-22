@@ -16,7 +16,7 @@
     "knex": "~0.13.0",
     "pg": "^7.0.2",
     "prompt-confirm": "^1.2.0",
-    "semver": "^5.4.1"
+    "semver": "^6.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
